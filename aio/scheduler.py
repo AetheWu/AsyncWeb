@@ -11,8 +11,8 @@ class Scheduler:
         self._ready = deque()    # Tasks ready to run
         self._read_waiting = {}  # Tasks waiting to read
         self._write_waiting = {} # Tasks waiting to write
-        self.max_size = 100
-        self.link_queue = OrderedDict()
+        # self.max_size = 100
+        # self.link_queue = OrderedDict()
 
     # Poll for I/O events and restart waiting tasks
     def _iopoll(self):
@@ -42,9 +42,6 @@ class Scheduler:
     # Add a task to the reading set
     def _read_wait(self, fileno, evt, task):
         self._read_waiting[fileno] = (evt, task)
-                
-    def _link_buffer(self, fileno, evt, task):
-        self.link_queue[fileno] = (evt, task)
 
     # Add a task to the write set
     def _write_wait(self, fileno, evt, task):
