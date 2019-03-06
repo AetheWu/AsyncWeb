@@ -10,15 +10,13 @@ from aio.request import RequestParser
 from aio.urls import urls
 from aio.websocket import Socket
 
-# Example of a function involving generators.  This should
-# be called using line = yield from readline(sock)
 def readline(sock):
     c = yield sock.recv(1024)
     if c is not None:
         return c.decode('utf-8')
 
 
-# Echo server using generators
+#async web server using generators
 class AIOServer:
     def  __init__(self,addr,sched):
         self.sched = sched

@@ -5,13 +5,13 @@ from aio.scheduler import Scheduler
 from aio.aioclient import HttpClient
 
 sched = Scheduler()
-# cli = HttpClient(sched)
+
 url = 'http://www.baidu.com'
 
 def run():
     for i in range(500):
         cli = HttpClient()
-        sched.new(cli.get(url, i))
+        sched.new(cli.get(url))
 
     sched.run()
 

@@ -1,6 +1,6 @@
 
 
-# This class represents a generic yield event in the scheduler
+#调度器中的生产器事件抽象类
 class YieldEvent:
     def handle_yield(self, sched, task):
         pass
@@ -9,7 +9,6 @@ class YieldEvent:
         pass
 
 
-# Example implementation of coroutine-based socket I/O
 class ReadSocket(YieldEvent):
     def __init__(self, sock, nbytes):
         self.sock = sock
@@ -42,6 +41,7 @@ class WriteSocket(YieldEvent):
         else:
             return None
 
+
 class AcceptSocket(YieldEvent):
     def __init__(self, sock):
         self.sock = sock
@@ -52,6 +52,7 @@ class AcceptSocket(YieldEvent):
     def handle_resume(self, sched, task):
         r = self.sock.accept()
         sched.add_ready(task, r)
+
 
 class ConnectSocket(YieldEvent):
     def __init__(self, sock, addr, next_task):

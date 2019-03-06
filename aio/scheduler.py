@@ -6,16 +6,24 @@ from collections import OrderedDict
 from aio.event import YieldEvent
 
 class Scheduler:
+    '''
+    调度器类：维护一个任务队列，任务由一个生成器组成；
+    调度器负责在任务进入IO等待时进行任务切换
+    '''
     def __init__(self):
-        self._numtasks = 0       # Total num of tasks
-        self._ready = deque()    # Tasks ready to run
-        self._read_waiting = {}  # Tasks waiting to read
-        self._write_waiting = {} # Tasks waiting to write
+        self._numtasks = 0
+        self._ready = deque()
+        self._read_waiting = {}
+        self._write_waiting = {}
         # self.max_size = 100
         # self.link_queue = OrderedDict()
 
-    # Poll for I/O events and restart waiting tasks
     def _iopoll(self):
+        '''
+        IO等待区域，使用select函数，进行IO多路复用；
+        当IO事件就绪时，会调用YieldEvent.handle_resume进行IO数据处理，并恢复任务；
+        :return:
+        '''
         rset,wset,_ = select(self._read_waiting,
                                 self._write_waiting,[])
         for r in rset:
@@ -27,29 +35,26 @@ class Scheduler:
 
     def new(self,task):
         '''
-        Add a newly started task to the scheduler
+        向任务队列新增任务；
         '''
         self._ready.append((task, None))
         self._numtasks += 1
 
     def add_ready(self, task, msg=None):
         '''
-        Append an already started task to the ready queue.
-        msg is what to send into the task when it resumes.
+        将进入IO等待的任务重新加入队列，并恢复运行；
         '''
         self._ready.append((task, msg))
 
-    # Add a task to the reading set
     def _read_wait(self, fileno, evt, task):
         self._read_waiting[fileno] = (evt, task)
 
-    # Add a task to the write set
     def _write_wait(self, fileno, evt, task):
         self._write_waiting[fileno] = (evt, task)
 
     def run(self):
         '''
-        Run the task scheduler until there are no tasks
+        任务队列运行主函数；
         '''
         while self._numtasks:
             try:

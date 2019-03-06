@@ -33,7 +33,7 @@ def run_server():
 
 def run_test():
     pool = ProcessPoolExecutor()
-    task0 = pool.submit(run_server)  
+    task0 = pool.submit(run_server)
     task1 = pool.submit(run_client)
 
 if __name__ == "__main__":

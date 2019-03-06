@@ -9,14 +9,18 @@ from aio.event import ReadSocket
 from aio.websocket import Socket
 from aio.parse_response import Response
 
+
 class HttpClient:
-    def get(self, url, i, **kwargs):
+    def get(self, url:str, **kwargs):
+        '''
+        异步http get请求任务，请求为非阻塞；
+        '''
         try:
             sock, host, port, request = self.request(url, method='GET', data=None, **kwargs)
             sock.setblocking(False)
             self.client = Socket(sock)
-            print('get:', i)
-            yield self.client.connect((host, port), self.handle_request(i, request))
+            print('get:', url)
+            yield self.client.connect((host, port), self.handle_request(request))
 
         except ConnectionError:
             print('Connection error')
@@ -25,9 +29,8 @@ class HttpClient:
     def post(self, url, form, **kwargs):
         pass  
 
-    def handle_request(self, i, request):
+    def handle_request(self, request):
         yield from self._send(request)
-        print('recv:', i)
         list_response = []
         while True:
             response = yield self.client.recv(1024)

@@ -1,6 +1,6 @@
 from aio.event import ReadSocket,WriteSocket,AcceptSocket,YieldEvent,ConnectSocket
 
-# Wrapper around a socket object for use with yield
+
 class Socket(object):
     def __init__(self, sock):
         self._sock = sock

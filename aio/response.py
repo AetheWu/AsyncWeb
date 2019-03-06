@@ -1,6 +1,7 @@
 from abc import abstractmethod
 import os
 
+
 class BaseResponse:
     def __init__(self):
         self.head = 'HTTP/1.1 200 OK\r\n'\
@@ -26,6 +27,7 @@ class TextResponse(BaseResponse):
     def result(self):
         response = self.head.format(length=len(self.body)) + self.body
         return response.encode('utf-8')
+
 
 class HTMLResponse(BaseResponse):
     def __init__(self, filepath):
